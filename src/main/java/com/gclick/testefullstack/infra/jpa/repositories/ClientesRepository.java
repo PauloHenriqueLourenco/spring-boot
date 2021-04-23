@@ -1,7 +1,10 @@
 package com.gclick.testefullstack.infra.jpa.repositories;
 
+import com.gclick.testefullstack.dtos.CreateClienteDTO;
 import com.gclick.testefullstack.infra.jpa.entities.Cliente;
 import com.gclick.testefullstack.repositories.IClientesRepository;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -30,6 +33,16 @@ public class ClientesRepository implements IClientesRepository {
     @Override
     public Optional<Cliente> findById(Long id) {
         return this.clientesRepository.findById(id);
+    }
+
+    @Override
+    public Cliente create(CreateClienteDTO clienteData) {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        var cliente = modelMapper.map(clienteData, Cliente.class);
+
+        return this.clientesRepository.save(cliente);
     }
 
     @Override
